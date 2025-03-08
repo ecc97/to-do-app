@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check, X, Edit2 } from "lucide-react";
-import { Todo } from '@/app/interfaces/ITask';
+import { Todo } from '../../../interfaces/ITask';
 import Button from '../Button/Button';
 
 interface TodoItemProps {

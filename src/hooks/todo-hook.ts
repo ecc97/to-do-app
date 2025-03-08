@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Todo } from '@/app/interfaces/ITask';
+import { Todo } from '../interfaces/ITask';
 
 const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
