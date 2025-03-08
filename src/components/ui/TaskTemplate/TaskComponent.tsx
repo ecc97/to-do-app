@@ -1,6 +1,7 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import { Plus, Check, X, Edit2 } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import TodoInput from '../Input/TodoInput';
+import TodoList from '../TodoList/TodoList';
 import { Todo } from '@/app/interfaces/ITask';
 
 function TaskComponent() {
@@ -11,7 +12,6 @@ function TaskComponent() {
     const addTodo = () => {
         if (newTodo.trim()) {
             setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
-            // localStorage.setItem("todos", JSON.stringify([...todos, { id: Date.now(), text: newTodo, completed: false }]));
             setNewTodo("");
         }
     };
@@ -31,15 +31,9 @@ function TaskComponent() {
 
     const saveEdit = () => {
         if (editingTodo) {
-            const updatedTodos = todos.map(todo => 
+            const updatedTodos = todos.map(todo =>
                 todo.id === editingTodo.id ? { ...todo, text: newTodo } : todo
             );
-            // setTodos(todos.map(todo => 
-            //     todo.id === editingTodo.id ? { ...todo, text: newTodo } : todo
-            // ));
-            // localStorage.setItem("todos", JSON.stringify(todos.map(todo => 
-            //     todo.id === editingTodo.id ? { ...todo, text: newTodo } : todo
-            // )));
             setTodos(updatedTodos);
             setEditingTodo(null);
             setNewTodo("");
@@ -62,21 +56,13 @@ function TaskComponent() {
         }
     };
 
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = e.target.value;
-        if (inputValue.length <= 20) {
-            setNewTodo(inputValue);
-        }
-    };
-
-    
     useEffect(() => {
         const storedTodos = localStorage.getItem("todos");
         if (storedTodos) {
             setTodos(JSON.parse(storedTodos));
         }
     }, []);
-    
+
     useEffect(() => {
         localStorage.setItem("todos", JSON.stringify(todos));
     }, [todos]);
@@ -87,67 +73,23 @@ function TaskComponent() {
                 <h1 className="text-3xl font-bold text-white mb-8 text-center">
                     To-Do List
                 </h1>
-
-                {/* Input section */}
-                <div className="flex gap-2 mb-8">
-                    <div className="relative flex-1">
-                        <input
-                            type="text"
-                            value={newTodo}
-                            onChange={handleInput}
-                            onKeyDown={handleKeyPress}
-                            placeholder="Añadir item"
-                            className="w-full px-4 py-3 bg-[#1A2642] rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        />
-                    </div>
-                    <button
-                        onClick={editingTodo ? saveEdit : addTodo}
-                        className="p-3 bg-purple-500 rounded-full hover:bg-purple-600 transition-colors"
-                    >
-                        <Plus className="w-6 h-6 text-white" />
-                    </button>
-                </div>
-
-                {/* Todo list */}
-                <div className="space-y-3">
-                    {todos.map((todo) => (
-                        <div
-                            key={todo.id}
-                            className="flex items-center gap-2 bg-[#1A2642] rounded-full p-2 pr-3 group"
-                        >
-                            <button
-                                onClick={() => toggleTodo(todo.id)}
-                                className={`p-2 rounded-full transition-colors ${todo.completed ? "bg-green-500" : "bg-[#2A3754] hover:bg-[#374869]"
-                                    }`}
-                            >
-                                <Check className={`w-5 h-5 ${todo.completed ? "text-white" : "text-transparent"}`} />
-                            </button>
-                            <span
-                                className={`flex-1 text-white ${todo.completed ? "line-through text-gray-400" : ""
-                                    }`}
-                            >
-                                {todo.text}
-                            </span>
-                            <div className="flex gap-1">
-                                <button
-                                    className="p-2 rounded-full hover:bg-[#2A3754] transition-colors"
-                                    onClick={() => {startEditing(todo);}}
-                                >
-                                    <Edit2 className="w-4 h-4 text-cyan-400" />
-                                </button>
-                                <button
-                                    className="p-2 rounded-full hover:bg-[#2A3754] transition-colors"
-                                    onClick={() => deleteTodo(todo.id)}
-                                >
-                                    <X className="w-4 h-4 text-red-400" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <TodoInput
+                    newTodo={newTodo}
+                    setNewTodo={setNewTodo}
+                    addTodo={addTodo}
+                    saveEdit={saveEdit}
+                    editingTodo={!!editingTodo}
+                    handleKeyPress={handleKeyPress}
+                />
+                <TodoList
+                    todos={todos}
+                    toggleTodo={toggleTodo}
+                    startEditing={startEditing}
+                    deleteTodo={deleteTodo}
+                />
             </div>
         </div>
-    )
+    );
 }
 
-export default TaskComponent
+export default TaskComponent;
