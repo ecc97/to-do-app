@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Todo } from '../interfaces/ITask';
+import { InitialTodo, Todo } from '../interfaces/ITask';
+
 
 const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
-    const [newTodo, setNewTodo] = useState("");
+    const [newTodo, setNewTodo] = useState<InitialTodo>({ title: "", content: "" });
     const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
     const addTodo = () => {
-        if (newTodo.trim()) {
-            setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
-            setNewTodo("");
+        if (newTodo.title.trim()) {
+            const newTask: Todo = { id: Date.now(), title: newTodo.title, content: newTodo.content!, completed: false, createdAt: new Date(), updatedAt: new Date() };
+            setTodos([...todos, newTask]);
+            setNewTodo({ title: "", content: "" });
         }
     };
 
@@ -23,17 +25,17 @@ const useTodos = () => {
 
     const startEditing = (todo: Todo) => {
         setEditingTodo(todo);
-        setNewTodo(todo.text);
+        setNewTodo({ title: todo.title, content: todo.content });
     };
 
     const saveEdit = () => {
         if (editingTodo) {
             const updatedTodos = todos.map(todo =>
-                todo.id === editingTodo.id ? { ...todo, text: newTodo } : todo
+                todo.id === editingTodo.id ? { ...todo, ...newTodo, updatedAt: new Date() } : todo
             );
             setTodos(updatedTodos);
             setEditingTodo(null);
-            setNewTodo("");
+            setNewTodo({ title: "", content: "" });
         }
     };
 

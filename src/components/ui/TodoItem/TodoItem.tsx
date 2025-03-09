@@ -8,9 +8,10 @@ interface TodoItemProps {
     toggleTodo: (id: number) => void;
     startEditing: (todo: Todo) => void;
     deleteTodo: (id: number) => void;
+    openModal: () => void
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo, toggleTodo, startEditing, deleteTodo }) => {
+const TodoItem: React.FC<TodoItemProps> = ({ todo, toggleTodo, startEditing, deleteTodo, openModal }) => {
     return (
         <div className="flex items-center gap-2 bg-[#1A2642] rounded-full p-2 pr-3 group">
             <Button
@@ -20,12 +21,12 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, toggleTodo, startEditing, del
                 <Check className={`w-5 h-5 ${todo.completed ? "text-white" : "text-transparent"}`} />
             </Button>
             <span className={`flex-1 text-white ${todo.completed ? "line-through text-gray-400" : ""}`}>
-                {todo.text}
+                {todo.title}
             </span>
             <div className="flex gap-1">
                 <Button
                     className="p-2 rounded-full hover:bg-[#2A3754] transition-colors"
-                    onClick={() => startEditing(todo)}
+                    onClick={() => { startEditing(todo); openModal(); }}
                 >
                     <Edit2 className="w-4 h-4 text-cyan-400" />
                 </Button>
