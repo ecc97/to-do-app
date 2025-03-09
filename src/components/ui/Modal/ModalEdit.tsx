@@ -2,13 +2,15 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button/Button";
 import { X } from "lucide-react";
+import { InitialTodo } from "@/interfaces/ITask";
+import { formatDate } from "@/utils/formaDate";
 
 interface EditModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (title: string, content: string) => void;
-    initialTitle: string;
-    initialContent: string;
+    onSave: () => void;
+    todo: InitialTodo;
+    setTodo: (todo: InitialTodo) => void;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -17,49 +19,30 @@ const EditModal: React.FC<EditModalProps> = ({
     isOpen,
     onClose,
     onSave,
-    initialTitle,
-    initialContent,
+    todo,
+    setTodo,
     createdAt,
-    updatedAt,
+    updatedAt
 }) => {
-    const [title, setTitle] = useState(initialTitle);
-    const [content, setContent] = useState(initialContent);
-
-    useEffect(() => {
-        setTitle(initialTitle);
-        setContent(initialContent);
-    }, [initialTitle, initialContent]);
 
     if (!isOpen) return null;
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
         if (inputValue.length <= 20) {
-            setTitle(inputValue);
+            setTodo({ ...todo, title: inputValue });
         }
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
-            onSave(title, content);
+            onSave();
             onClose();
         }
     };
 
-    const formatDate = (date: Date): string => {
-        const options: Intl.DateTimeFormatOptions = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-        };
-        return new Intl.DateTimeFormat('es-ES', options).format(date);
-    };
-
-    const createdAtTodo = new Date(createdAt || 0);
-    const updatedAtTodo = new Date(updatedAt || 0);
+    const createdAtTodo = new Date(createdAt!);
+    const updatedAtTodo = new Date(updatedAt!);
     const formattedCreatedAt = createdAt ? formatDate(createdAtTodo) : '';
     const formattedUpdatedAt = updatedAt ? formatDate(updatedAtTodo) : '';
 
@@ -70,7 +53,7 @@ const EditModal: React.FC<EditModalProps> = ({
                 {/* Botón de cierre (X) */}
                 <button
                     onClick={onClose}
-                    className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                    className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 cursor-pointer"
                 >
                     <X />
                 </button>
@@ -79,7 +62,7 @@ const EditModal: React.FC<EditModalProps> = ({
                     <label className="block text-gray-700 mb-1">Título</label>
                     <input
                         type="text"
-                        value={title}
+                        value={todo.title}
                         onChange={handleInput}
                         onKeyDown={handleKeyPress}
                         className="w-full border border-gray-300 rounded p-2"
@@ -88,8 +71,8 @@ const EditModal: React.FC<EditModalProps> = ({
                 <div className="mb-4">
                     <label className="block text-gray-700 mb-1">Descripción</label>
                     <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
+                        value={todo.content}
+                        onChange={(e) => setTodo({ ...todo, content: e.target.value })}
                         onKeyDown={handleKeyPress}
                         className="w-full border border-gray-300 rounded p-2"
                     />
@@ -97,23 +80,26 @@ const EditModal: React.FC<EditModalProps> = ({
                 <div className="flex justify-end space-x-2">
                     <Button
                         onClick={onClose}
-                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded cursor-pointer"
                     >
                         Cancelar
                     </Button>
                     <Button
                         onClick={() => {
-                            onSave(title, content);
+                            onSave();
                             onClose();
                         }}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
                     >
                         Guardar
                     </Button>
                 </div>
                 <div className="flex flex-col justify-between mt-2">    
-                    {createdAt && <span className="text-gray-600">Creado: {formattedCreatedAt}</span>}
-                    {updatedAt && <span className="text-gray-600">Actualizado: {formattedUpdatedAt}</span>}
+                    {formattedCreatedAt === formattedUpdatedAt ? 
+                     <span className="text-gray-600">Creado: {formattedCreatedAt}</span>
+                     : 
+                     <span className="text-gray-600">Actualizado: {formattedUpdatedAt}</span>
+                    }
                 </div>
             </div>
         </div>

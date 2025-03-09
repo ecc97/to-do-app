@@ -24,13 +24,13 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, toggleTodo, startEditing, del
             </span>
             <div className="flex gap-1">
                 <Button
-                    className="p-2 rounded-full hover:bg-[#2A3754] transition-colors"
+                    className="p-2 rounded-full hover:bg-[#2A3754] transition-colors cursor-pointer"
                     onClick={() => { startEditing(todo) }}
                 >
                     <Edit2 className="w-4 h-4 text-cyan-400" />
                 </Button>
                 <Button
-                    className="p-2 rounded-full hover:bg-[#2A3754] transition-colors"
+                    className="p-2 rounded-full hover:bg-[#2A3754] transition-colors cursor-pointer"
                     onClick={() => deleteTodo(todo.id)}
                 >
                     <X className="w-4 h-4 text-red-400" />

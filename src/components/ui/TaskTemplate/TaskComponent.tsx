@@ -9,28 +9,19 @@ import useTodos from '@/hooks/todo-hook';
 import { Plus } from 'lucide-react';
 
 function TaskComponent() {
-    const { todos, addTodo, saveEdit, editingTodo, toggleTodo, startEditing, deleteTodo } = useTodos();
+    const { todos, todo, setTodo, addTodo, saveEdit, editingTodo, toggleTodo, startEditing, deleteTodo } = useTodos();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    const openAddModal = () => setIsAddModalOpen(true);
-
-    const onAddSubmit = (title: string, content: string) => {
-        addTodo(title, content);
-        closeAddModal()
+    const openAddModal = () => {
+        setTodo({ title: "", content: "" });
+        setIsAddModalOpen(true);
     }
-    const openEditModal = (todo: Todo) => {
-        startEditing(todo);
+
+    const openEditModal = (t: Todo) => {
+        startEditing(t);
         setIsEditModalOpen(true);
-    }
-
-    const onEditSubmit = (title: string, content: string) => {
-        saveEdit( title, content);
-        closeEditModal()
-    }
-
-    const closeAddModal = () => setIsAddModalOpen(false);
-    const closeEditModal = () => setIsEditModalOpen(false);
+    };
 
     return (
         <>
@@ -55,17 +46,19 @@ function TaskComponent() {
             {/* Modal para Agregar */}
             <AddModal
                 isOpen={isAddModalOpen}
+                todo={todo}
+                setTodo={setTodo}
                 onClose={() => setIsAddModalOpen(false)}
-                onAdd={onAddSubmit}
+                onAdd={addTodo}
             />
 
             {/* Modal para Editar */}
             <EditModal
                 isOpen={isEditModalOpen}
+                todo={todo}
+                setTodo={setTodo}
                 onClose={() => setIsEditModalOpen(false)}
-                onSave={onEditSubmit}
-                initialTitle={editingTodo ? editingTodo.title : ""}
-                initialContent={editingTodo ? editingTodo.content : ""}
+                onSave={saveEdit}
                 createdAt={editingTodo ? editingTodo.createdAt : undefined}
                 updatedAt={editingTodo ? editingTodo.updatedAt : undefined}
             />
