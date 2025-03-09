@@ -4,14 +4,12 @@ import { InitialTodo, Todo } from '../interfaces/ITask';
 
 const useTodos = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
-    const [newTodo, setNewTodo] = useState<InitialTodo>({ title: "", content: "" });
     const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
-    const addTodo = () => {
-        if (newTodo.title.trim()) {
-            const newTask: Todo = { id: Date.now(), title: newTodo.title, content: newTodo.content!, completed: false, createdAt: new Date(), updatedAt: new Date() };
+    const addTodo = (title: string, content: string ) => {
+        if (title.trim()) {
+            const newTask: Todo = { id: Date.now(), title: title, content: content, completed: false, createdAt: new Date(), updatedAt: new Date() };
             setTodos([...todos, newTask]);
-            setNewTodo({ title: "", content: "" });
         }
     };
 
@@ -25,17 +23,15 @@ const useTodos = () => {
 
     const startEditing = (todo: Todo) => {
         setEditingTodo(todo);
-        setNewTodo({ title: todo.title, content: todo.content });
     };
 
-    const saveEdit = () => {
+    const saveEdit = (title: string, content: string) => {
         if (editingTodo) {
             const updatedTodos = todos.map(todo =>
-                todo.id === editingTodo.id ? { ...todo, ...newTodo, updatedAt: new Date() } : todo
+                todo.id === editingTodo.id ? { ...todo, title: title, content: content, updatedAt: new Date() } : todo
             );
             setTodos(updatedTodos);
             setEditingTodo(null);
-            setNewTodo({ title: "", content: "" });
         }
     };
 
@@ -45,15 +41,15 @@ const useTodos = () => {
         }
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter") {
-            if (editingTodo) {
-                saveEdit();
-            } else {
-                addTodo();
-            }
-        }
-    };
+    // const handleKeyPress = (e: React.KeyboardEvent) => {
+    //     if (e.key === "Enter") {
+    //         if (editingTodo) {
+    //             saveEdit(editingTodo.title, editingTodo.content);
+    //         } else {
+    //             addTodo(newTodo.title, newTodo.content);
+    //         }
+    //     }
+    // };
 
     useEffect(() => {
         const storedTodos = localStorage.getItem("todos");
@@ -68,15 +64,12 @@ const useTodos = () => {
 
     return {
         todos,
-        newTodo,
-        setNewTodo,
         editingTodo,
         addTodo,
         toggleTodo,
         startEditing,
         saveEdit,
         deleteTodo,
-        handleKeyPress,
     };
 };
 

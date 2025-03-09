@@ -7,10 +7,9 @@ interface TodoListProps {
     toggleTodo: (id: number) => void;
     startEditing: (todo: Todo) => void;
     deleteTodo: (id: number) => void;
-    openModal: () => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todos, toggleTodo, startEditing, deleteTodo, openModal }) => {
+const TodoList: React.FC<TodoListProps> = ({ todos, toggleTodo, startEditing, deleteTodo }) => {
     return (
         <div className="space-y-3">
             {todos.map((todo) => (
@@ -20,7 +19,6 @@ const TodoList: React.FC<TodoListProps> = ({ todos, toggleTodo, startEditing, de
                     toggleTodo={toggleTodo}
                     startEditing={startEditing}
                     deleteTodo={deleteTodo}
-                    openModal={openModal} 
                 />
             ))}
         </div>
