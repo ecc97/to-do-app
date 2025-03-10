@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Button from "../Button/Button";
 import { X } from "lucide-react";
 import { InitialTodo } from "@/interfaces/ITask";
